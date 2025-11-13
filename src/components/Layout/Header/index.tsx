@@ -1,22 +1,13 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { headerData } from "../Header/Navigation/menuData";
 import Logo from "./Logo";
 import Image from "next/image";
 import HeaderLink from "../Header/Navigation/HeaderLink";
 import MobileHeaderLink from "../Header/Navigation/MobileHeaderLink";
-import Signin from "@/components/Auth/SignIn";
-import SignUp from "@/components/Auth/SignUp";
 import { useTheme } from "next-themes";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import DonationFormContext from "@/app/context/donationContext";
-import { Donation } from "@/components/Home/Hero/Donation";
-import { SuccessfullLogin } from "@/components/Auth/AuthDialog/SuccessfulLogin";
-import AuthDialogContext from "@/app/context/AuthDialogContext";
-import { FailedLogin } from "@/components/Auth/AuthDialog/FailedLogin";
-import { UserRegistered } from "@/components/Auth/AuthDialog/UserRegistered";
 
 const Header: React.FC = () => {
   const pathUrl = usePathname();
@@ -24,12 +15,8 @@ const Header: React.FC = () => {
 
   const [navbarOpen, setNavbarOpen] = useState(false);
   const [sticky, setSticky] = useState(false);
-  const [isSignInOpen, setIsSignInOpen] = useState(false);
-  const [isSignUpOpen, setIsSignUpOpen] = useState(false);
 
   const navbarRef = useRef<HTMLDivElement>(null);
-  const signInRef = useRef<HTMLDivElement>(null);
-  const signUpRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
 
   const handleScroll = () => {
@@ -37,18 +24,6 @@ const Header: React.FC = () => {
   };
 
   const handleClickOutside = (event: MouseEvent) => {
-    if (
-      signInRef.current &&
-      !signInRef.current.contains(event.target as Node)
-    ) {
-      setIsSignInOpen(false);
-    }
-    if (
-      signUpRef.current &&
-      !signUpRef.current.contains(event.target as Node)
-    ) {
-      setIsSignUpOpen(false);
-    }
     if (
       mobileMenuRef.current &&
       !mobileMenuRef.current.contains(event.target as Node) &&
@@ -65,22 +40,7 @@ const Header: React.FC = () => {
       window.removeEventListener("scroll", handleScroll);
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [navbarOpen, isSignInOpen, isSignUpOpen]);
-
-  useEffect(() => {
-    if (isSignInOpen || isSignUpOpen || navbarOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-  }, [isSignInOpen, isSignUpOpen, navbarOpen]);
-
-  const info = useContext(DonationFormContext);
-
-  useEffect(() => {}, []);
-
-  const donationInfo = useContext(DonationFormContext);
-  const authDialog = useContext(AuthDialogContext);
+  }, [navbarOpen]);
 
   return (
     <header
@@ -194,65 +154,15 @@ const Header: React.FC = () => {
             <Link
               href="#"
               className="hidden lg:block bg-error text-sm hover:bg-error/90 text-white px-4 py-3.5 leading-none rounded-lg font-medium text-nowrap"
-              onClick={() => {
-                setIsSignInOpen(true);
-              }}
             >
               Sign In
             </Link>
-            {isSignInOpen && (
-              <div
-                ref={signInRef}
-                className="fixed top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center z-50 m-0!"
-              >
-                <div className="relative mx-auto w-full max-w-md overflow-hidden rounded-lg bg-white px-8 py-14 text-center dark:bg-dark">
-                  <button
-                    onClick={() => setIsSignInOpen(false)}
-                    className=" hover:bg-gray-200 dark:hover:bg-gray-700 p-1 rounded-full absolute -top-5 -right-3 mr-8 mt-8"
-                    aria-label="Close Sign In Modal"
-                  >
-                    <Icon
-                      icon="ic:round-close"
-                      className="text-2xl dark:text-white"
-                    />
-                  </button>
-                  <Signin
-                    signInOpen={(value: boolean) => setIsSignInOpen(value)}
-                  />
-                </div>
-              </div>
-            )}
             <Link
               href="#"
               className="hidden lg:block text-sm bg-dark hover:bg-dark/90 text-white px-4 py-3.5 leading-none rounded-lg font-medium text-nowrap"
-              onClick={() => {
-                setIsSignUpOpen(true);
-              }}
             >
               Sign Up
             </Link>
-            {isSignUpOpen && (
-              <div
-                ref={signUpRef}
-                className="fixed top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center z-50 m-0!"
-              >
-                <div className="relative mx-auto w-full max-w-md overflow-hidden rounded-lg bg-white px-8 py-5 text-center dark:bg-dark">
-                  <button
-                    onClick={() => setIsSignUpOpen(false)}
-                    className=" hover:bg-gray-200 dark:hover:bg-gray-700 p-1 rounded-full absolute -top-5 -right-3 mr-8 mt-8"
-                    aria-label="Close Sign In Modal"
-                  >
-                    <Icon
-                      icon="ic:round-close"
-                      className="text-2xl dark:text-white"
-                    />
-                  </button>
-                  <SignUp
-                    signUpOpen={(value: boolean) => setIsSignUpOpen(value)}
-                  />
-                </div>
-              </div>
-            )}
             <button
               onClick={() => setNavbarOpen(!navbarOpen)}
               className="block lg:hidden p-2 rounded-lg"
@@ -307,68 +217,18 @@ const Header: React.FC = () => {
               <Link
                 href="#"
                 className="bg-transparent border border-primary text-primary px-4 py-2 text-nowrap rounded-lg hover:bg-darkprimary hover:text-white"
-                onClick={() => {
-                  setIsSignInOpen(true);
-                  setNavbarOpen(false);
-                }}
               >
                 Sign In
               </Link>
               <Link
                 href="#"
                 className="bg-primary text-white px-4 py-2 rounded-lg text-nowrap hover:bg-darkprimary"
-                onClick={() => {
-                  setIsSignUpOpen(true);
-                  setNavbarOpen(false);
-                }}
               >
                 Sign Up
               </Link>
             </div>
           </nav>
         </div>
-      </div>
-      {/* Donation Popup */}
-      {donationInfo?.isDonationOpen && (
-        <div className="fixed top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center z-50 m-0!">
-          <div className="relative mx-auto w-full max-w-md overflow-hidden rounded-lg bg-white px-8 py-5 text-center dark:bg-dark">
-            <button
-              onClick={() => donationInfo?.setIsDonationOpen(false)}
-              className=" hover:bg-gray-200 dark:hover:bg-gray-700 p-1 rounded-full absolute -top-5 -right-3 mr-8 mt-8"
-              aria-label="Close Sign In Modal"
-            >
-              <Icon
-                icon="ic:round-close"
-                className="text-2xl dark:text-white"
-              />
-            </button>
-            <Donation />
-          </div>
-        </div>
-      )}
-      {/* Successsful Login Alert */}
-      <div
-        className={`fixed top-6 end-1/2 translate-x-1/2 z-50 ${
-          authDialog?.isSuccessDialogOpen == true ? "block" : "hidden"
-        }`}
-      >
-        <SuccessfullLogin />
-      </div>
-      {/* Failed Login Alert */}
-      <div
-        className={`fixed top-6 end-1/2 translate-x-1/2 z-50 ${
-          authDialog?.isFailedDialogOpen == true ? "block" : "hidden"
-        }`}
-      >
-        <FailedLogin />
-      </div>
-      {/* User registration Alert */}
-      <div
-        className={`fixed top-6 end-1/2 translate-x-1/2 z-50 ${
-          authDialog?.isUserRegistered == true ? "block" : "hidden"
-        }`}
-      >
-        <UserRegistered />
       </div>
     </header>
   );
