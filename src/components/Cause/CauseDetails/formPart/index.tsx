@@ -10,7 +10,7 @@ const FormPart = () => {
         <p className="mb-0 text-base text-muted dark:text-white/60">
           <span className="text-midnight_text dark:text-white">Notice:</span>
            Test mode is enabled. While in test mode no live donations are
-          processed.
+          processed
         </p>
       </div>
       <div className="bg-grey dark:bg-darkmode px-8 py-14 rounded-sm border border-border dark:border-dark_border mb-8 ">
