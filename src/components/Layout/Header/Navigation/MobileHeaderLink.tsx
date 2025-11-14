@@ -3,20 +3,29 @@ import Link from "next/link";
 import { HeaderItem } from "../../../../types/menu";
 import { usePathname } from "next/navigation";
 
-const MobileHeaderLink: React.FC<{ item: HeaderItem }> = ({ item }) => {
+const MobileHeaderLink: React.FC<{
+  item: HeaderItem;
+  onLinkClick: () => void;
+}> = ({ item, onLinkClick }) => {
   const [submenuOpen, setSubmenuOpen] = useState(false);
 
   const handleToggle = () => {
     setSubmenuOpen(!submenuOpen);
   };
 
+  const handleLinkClick = () => {
+    if (!item.submenu) {
+      onLinkClick();
+    }
+  };
+
   const path = usePathname();
 
-  let navString
+  let navString;
 
   const counterLetter = item.label.slice(-1);
   if (counterLetter === "s") {
-    navString = item.label.toLowerCase().substring(item.label.length - 1, - 1);
+    navString = item.label.toLowerCase().substring(item.label.length - 1, -1);
   } else {
     navString = item.label.toLowerCase();
   }
@@ -25,9 +34,10 @@ const MobileHeaderLink: React.FC<{ item: HeaderItem }> = ({ item }) => {
     <div className="relative w-full">
       <Link
         href={item.href}
-        onClick={item.submenu ? handleToggle : undefined}
-        className={`flex items-center justify-between w-full py-2 px-3 text-black rounded-md dark:text-white/60 focus:outline-hidden  ${path.startsWith(`/${navString}`) ? "bg-primary! text-white!" : null} ${path === item.href ? "bg-primary! text-white! " : ""
-          }`}
+        onClick={item.submenu ? handleToggle : handleLinkClick}
+        className={`flex items-center justify-between w-full py-2 px-3 text-black rounded-md dark:text-white/60 focus:outline-hidden  ${
+          path.startsWith(`/${navString}`) ? "bg-primary! text-white!" : null
+        } ${path === item.href ? "bg-primary! text-white! " : ""}`}
       >
         {item.label}
         {item.submenu && (
@@ -54,7 +64,10 @@ const MobileHeaderLink: React.FC<{ item: HeaderItem }> = ({ item }) => {
             <Link
               key={index}
               href={subItem.href}
-              className={`block py-2 px-3 text-gray-500  ${path === subItem.href ? "text-primary!" : null}`}
+              onClick={onLinkClick}
+              className={`block py-2 px-3 text-gray-500  ${
+                path === subItem.href ? "text-primary!" : null
+              }`}
             >
               {subItem.label}
             </Link>
